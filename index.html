@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div style="display: flex;">
-        <iframe height="800" width="30%" src="https://merrysky.net/forecast/flensburg/si" frameborder="0"></iframe>
-        <iframe height="800" width="30%" class="hafas_webapp_iframe" allow="geolocation" id="HAFAS_WEBAPP_IFRAME_0" aria-label="Fahrplanauskunft" src="https://nah.sh.hafas.de/webapp/index.html?&amp;language=de_DE&amp;P=TP&amp;SID=A%3D1%40O%3DFlensburg%20Terrassenstra%C3%9Fe%40X%3D9424246%40Y%3D54803096%40U%3D100%40L%3D9027424%40B%3D1%40p%3D1722879035%40&amp;ZID=A%3D1%40O%3DFlensburg%20ZOB%40X%3D9437343%40Y%3D54785819%40U%3D100%40L%3D9027445%40B%3D1%40p%3D1722879035%40&amp;start=yes&amp;widget=1.0.0&amp;" style="border: none;"></iframe>
-        <div height="300" width="30%">
-            <iframe height="300" src="https://maps.sensor.community/grafana/d-solo/000000004/single-sensor-view?orgId=1&amp;panelId=2&amp;var-node=87534" frameborder="0"></iframe>
+    <div id="grid">
+        <iframe src="https://merrysky.net/forecast/flensburg/si" frameborder="0"></iframe>
+        <iframe class="hafas_webapp_iframe" allow="geolocation" id="HAFAS_WEBAPP_IFRAME_0" aria-label="Fahrplanauskunft" src="https://nah.sh.hafas.de/webapp/index.html?&amp;language=de_DE&amp;P=TP&amp;SID=A%3D1%40O%3DFlensburg%20Terrassenstra%C3%9Fe%40X%3D9424246%40Y%3D54803096%40U%3D100%40L%3D9027424%40B%3D1%40p%3D1722879035%40&amp;ZID=A%3D1%40O%3DFlensburg%20ZOB%40X%3D9437343%40Y%3D54785819%40U%3D100%40L%3D9027445%40B%3D1%40p%3D1722879035%40&amp;start=yes&amp;widget=1.0.0&amp;" style="border: none;"></iframe>
+        <div style="display: grid; grid-template-rows: 1fr auto;">
+            <iframe style="width: 100%; height: 100%;" src="https://maps.sensor.community/grafana/d-solo/000000004/single-sensor-view?orgId=1&amp;panelId=2&amp;var-node=87534" frameborder="0"></iframe>
             <section style="border: 4px dotted red; padding: 1rem;">
                 <h3>Aufgaben</h3>
                 <ul>
