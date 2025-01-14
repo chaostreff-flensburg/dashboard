@@ -13,10 +13,6 @@ var renderTime = function () {
 		},
 	);
 
-	let part1 = timeString.substring(0, 9);
-	let part2 = timeString.substring(9, 18);
-	let part3 = timeString.substring(18);
-
-	clock.textContent = `${part1}.${part2}${part3}`;
+  clock.textContent = `${timeString}`;
 };
 setInterval(renderTime, 1000);
