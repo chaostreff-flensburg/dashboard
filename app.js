@@ -391,7 +391,7 @@
     sparkline($("pegel-spark"), vals.filter((_, i) => i % step === 0 || i === vals.length - 1), mw);
   }
 
-  // ---------- Aufgaben (HedgeDoc-Pad + Grundaufgaben) als Bauchbinde ----------
+  // ---------- Aufgaben (HedgeDoc-Pad) als Bauchbinde ----------
   // Nimmt Listenpunkte ("- text") und offene Checkboxen ("- [ ] text"); erledigte ("- [x]") werden übersprungen.
   function parseTasks(md) {
     const out = [];
@@ -403,11 +403,9 @@
     }
     return out;
   }
-  function renderTicker(padTasks, baseTasks) {
+  function renderTicker(tasks) {
     const seen = new Set();
-    const items = [];
-    for (const t of padTasks) { const k = t.toLowerCase(); if (!seen.has(k)) { seen.add(k); items.push({ t, base: false }); } }
-    for (const t of baseTasks) { const k = t.toLowerCase(); if (!seen.has(k)) { seen.add(k); items.push({ t, base: true }); } }
+    const items = tasks.filter((t) => { const k = t.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
     const ticker = document.querySelector(".ticker"), track = $("ticker-track");
     if (!items.length) {
       ticker.dataset.static = "1";
@@ -415,7 +413,7 @@
       return;
     }
     ticker.dataset.static = "0";
-    const html = items.map(({ t, base }) => `<span class="task${base ? " base" : ""}">${esc(t)}</span><span class="sep">•</span>`).join("");
+    const html = items.map((t) => `<span class="task">${esc(t)}</span><span class="sep">•</span>`).join("");
     // Eine Gruppe muss mindestens so breit wie der Sichtbereich sein, damit die Schleife lückenlos läuft
     track.innerHTML = `<div class="ticker-group">${html}</div><div class="ticker-group">${html}</div>`;
     const viewport = ticker.querySelector(".ticker-viewport").clientWidth;
@@ -427,21 +425,20 @@
     const pxPerSecond = 70;
     track.style.animationDuration = `${Math.max(10, group.scrollWidth / pxPerSecond)}s`;
   }
-  let padTasks = [];
+  let tasks = [];
   async function updateTasks() {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 15000);
     try {
       const r = await fetch(C.tasks.url, { signal: ctrl.signal, cache: "no-store" });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      padTasks = parseTasks(await r.text());
+      tasks = parseTasks(await r.text());
     } finally {
       clearTimeout(t);
     }
-    renderTicker(padTasks, C.tasks.base || []);
+    renderTicker(tasks);
   }
-  renderTicker([], C.tasks.base || []);
-  window.addEventListener("resize", () => renderTicker(padTasks, C.tasks.base || []));
+  window.addEventListener("resize", () => renderTicker(tasks));
 
   // ---------- Start ----------
   schedule("SpaceAPI", updateSpace, C.refresh.space);

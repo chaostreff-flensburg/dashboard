@@ -30,22 +30,8 @@ window.DASHBOARD_CONFIG = {
   // Pegel (PEGELONLINE-Stationsname)
   pegel: { station: "FLENSBURG", label: "Pegel Flensburger Förde" },
 
-  // Aufgaben: offene Checkboxen ("- [ ] …") und Listenpunkte aus dem Pad,
-  // dazu feste Grundaufgaben, die immer durchlaufen (etwas dezenter dargestellt)
-  tasks: {
-    url: "https://md.c3fl.de/space-todos/download",
-    base: [
-      "Müll raus bringen",
-      "Pfand und Leergut wegbringen",
-      "Getränke nachfüllen",
-      "Spülmaschine ein- und ausräumen",
-      "Werkzeug zurück an seinen Platz",
-      "Lötstationen und Geräte ausschalten",
-      "Tische abwischen und freiräumen",
-      "Staubsaugen",
-      "Beim Gehen: Fenster zu, Heizung runter, Licht aus",
-    ],
-  },
+  // Aufgaben: offene Checkboxen ("- [ ] …") aus dem Pad, abgehakte ("- [x]") werden nicht gezeigt
+  tasks: { url: "https://md.c3fl.de/space-todos/download" },
 
   // Aktualisierungsintervalle in Sekunden
   refresh: { transit: 30, space: 60, weather: 600, indoor: 60, air: 300, pegel: 600, alerts: 600, tasks: 120 },

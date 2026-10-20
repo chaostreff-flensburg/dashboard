@@ -16,7 +16,7 @@ Stunden (siehe `config.js`).
 | Luft drinnen  | airquality.c3fl.de (CO₂, PM, VOC, Temperatur, Feuchte) | 1 min |
 | Luft draußen  | sensor.community (PM2.5 / PM10)          | 5 min     |
 | Pegel         | PEGELONLINE (WSV), Station Flensburg     | 10 min    |
-| Aufgaben      | HedgeDoc-Pad md.c3fl.de/space-todos + Grundaufgaben aus `config.js` | 2 min |
+| Aufgaben      | HedgeDoc-Pad md.c3fl.de/space-todos      | 2 min     |
 
 Fällt eine Quelle aus, bleibt der letzte Stand stehen und der Punkt in der
 Statuszeile unten wird rot.
@@ -30,8 +30,7 @@ und das in der Karte angezeigt.
 
 Aufgaben laufen als Bauchbinde unten durch. Quelle ist das Pad
 https://md.c3fl.de/space-todos: jede Zeile `- [ ] Text` oder `- Text` wird
-angezeigt, erledigte `- [x]` nicht. Die Grundaufgaben aus `config.js` laufen
-immer mit, etwas dezenter dargestellt.
+angezeigt, erledigte `- [x]` nicht.
 
 Haltestellen-IDs lassen sich so finden:
 

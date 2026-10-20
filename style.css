@@ -292,7 +292,6 @@ svg use { fill: none; stroke: currentColor; }
 .ticker-track { display: inline-flex; white-space: nowrap; will-change: transform; animation: ticker linear infinite; animation-duration: 60s; }
 .ticker-group { display: inline-flex; align-items: center; }
 .ticker-track .task { font-size: 1.6rem; }
-.ticker-track .task.base { color: var(--ink-2); }
 .ticker-track .sep { color: var(--accent); padding: 0 1.6rem; font-size: 1.2rem; }
 .ticker-track .empty { font-size: 1.4rem; color: var(--muted); padding: 0; }
 .ticker[data-static="1"] .ticker-track { animation: none; }
