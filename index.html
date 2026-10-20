@@ -1,29 +1,123 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <meta http-equiv="refresh" content="250">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard · Chaostreff Flensburg</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.2A8 8 0 0 1 9.8 4.5a8 8 0 1 0 9.7 9.7z"/></symbol>
+      <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18.5h10.5a3.5 3.5 0 0 0 .5-6.96A5.5 5.5 0 0 0 7.3 10.1 4.2 4.2 0 0 0 7 18.5z"/></symbol>
+      <symbol id="i-partly" viewBox="0 0 24 24"><path d="M8.5 5.5a4 4 0 0 1 7.2 1.3"/><path d="M9 3V1.8M4.6 5.1l-.9-.9M3 9.5H1.8M5 13.6l-.9.9"/><path d="M8 20h9.5a3.2 3.2 0 0 0 .4-6.37A5 5 0 0 0 8.3 12.6 3.7 3.7 0 0 0 8 20z"/></symbol>
+      <symbol id="i-partly-night" viewBox="0 0 24 24"><path d="M13.2 7.3A4.3 4.3 0 0 1 9.3 2.5a4.3 4.3 0 1 0 4.4 5"/><path d="M8 20h9.5a3.2 3.2 0 0 0 .4-6.37A5 5 0 0 0 8.3 12.6 3.7 3.7 0 0 0 8 20z"/></symbol>
+      <symbol id="i-fog" viewBox="0 0 24 24"><path d="M4 9h16M3 13h18M5 17h14"/></symbol>
+      <symbol id="i-drizzle" viewBox="0 0 24 24"><path d="M7 15h10.5a3.5 3.5 0 0 0 .5-6.96A5.5 5.5 0 0 0 7.3 6.6 4.2 4.2 0 0 0 7 15z"/><path d="M9 18.5v1.5M12.5 18.5v1.5M16 18.5v1.5"/></symbol>
+      <symbol id="i-rain" viewBox="0 0 24 24"><path d="M7 14h10.5a3.5 3.5 0 0 0 .5-6.96A5.5 5.5 0 0 0 7.3 5.6 4.2 4.2 0 0 0 7 14z"/><path d="M9.5 17l-1 3.5M13 17l-1 3.5M16.5 17l-1 3.5"/></symbol>
+      <symbol id="i-snow" viewBox="0 0 24 24"><path d="M7 13.5h10.5a3.5 3.5 0 0 0 .5-6.96A5.5 5.5 0 0 0 7.3 5.1 4.2 4.2 0 0 0 7 13.5z"/><path d="M9 17.5h.01M12.5 19.5h.01M16 17.5h.01M9 21h.01M16 21h.01"/></symbol>
+      <symbol id="i-thunder" viewBox="0 0 24 24"><path d="M7 13.5h10.5a3.5 3.5 0 0 0 .5-6.96A5.5 5.5 0 0 0 7.3 5.1 4.2 4.2 0 0 0 7 13.5z"/><path d="M13 13l-2.5 4.5h3L11 22"/></symbol>
+      <symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 8h11a2.5 2.5 0 1 0-2.5-2.5M3 12h15a2.5 2.5 0 1 1-2.5 2.5M3 16h8a2 2 0 1 1-2 2"/></symbol>
+      <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5s-6 6.6-6 10.5a6 6 0 0 0 12 0c0-3.9-6-10.5-6-10.5z"/></symbol>
+      <symbol id="i-sunrise" viewBox="0 0 24 24"><path d="M3 18h18M6.5 14.5a5.5 5.5 0 0 1 11 0"/><path d="M12 3v5M9.5 5.5 12 3l2.5 2.5"/></symbol>
+      <symbol id="i-sunset" viewBox="0 0 24 24"><path d="M3 18h18M6.5 14.5a5.5 5.5 0 0 1 11 0"/><path d="M12 8V3M9.5 5.5 12 8l2.5-2.5"/></symbol>
+      <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3 2.5 20h19L12 3z"/><path d="M12 9.5v5M12 17.5h.01"/></symbol>
+      <symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="15" rx="2.5"/><path d="M4 9h16M4 14h16M7 18.5v2M17 18.5v2M8 11.5h.01M16 11.5h.01"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/></symbol>
+    </defs>
+  </svg>
+
+  <main id="app">
+    <div id="alerts" class="alerts" hidden></div>
     <div id="grid">
-        <iframe src="https://merrysky.net/forecast/flensburg/si" frameborder="0"></iframe>
-        <iframe class="hafas_webapp_iframe" allow="geolocation" id="HAFAS_WEBAPP_IFRAME_0" aria-label="Fahrplanauskunft" src="https://nah.sh.hafas.de/webapp/index.html?&amp;language=de_DE&amp;P=TP&amp;SID=A%3D1%40O%3DFlensburg%20Terrassenstra%C3%9Fe%40X%3D9424246%40Y%3D54803096%40U%3D100%40L%3D9027424%40B%3D1%40p%3D1722879035%40&amp;ZID=A%3D1%40O%3DFlensburg%20ZOB%40X%3D9437343%40Y%3D54785819%40U%3D100%40L%3D9027445%40B%3D1%40p%3D1722879035%40&amp;start=yes&amp;widget=1.0.0&amp;" style="border: none;"></iframe>
-        <div style="display: grid; grid-template-rows: 1fr auto;">
-            <iframe style="width: 100%; height: 100%;" src="https://maps.sensor.community/grafana/d-solo/000000004/single-sensor-view?orgId=1&amp;panelId=2&amp;var-node=87534" frameborder="0"></iframe>
-            <section style="border: 4px dotted red; padding: 1rem; font-size: 2rem;">
-                <h3>Aufgaben</h3>
-                <ul>
-                    <li><strong>Müll raus bringen</strong></li>
-                    <li><strong>Saugen</strong></li>
-                    <li><strong>Getränke nachfüllen</strong></li>
-                </ul>
-            </section>
+
+    <section class="card card-clock" aria-label="Uhrzeit">
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="date" id="date">&nbsp;</div>
+    </section>
+
+    <section class="card card-space" id="space" data-state="unknown" aria-label="Space-Status">
+      <div class="card-title">Space</div>
+      <div class="space-state"><span class="dot"></span><span id="space-text">…</span></div>
+      <div class="space-since muted" id="space-since">&nbsp;</div>
+    </section>
+
+    <section class="card card-next" aria-label="Nächster Termin">
+      <div class="card-title" id="next-title">Nächster Termin</div>
+      <div class="next-when" id="next-when">…</div>
+      <div class="next-sub muted" id="next-sub">&nbsp;</div>
+    </section>
+
+    <section class="card card-weather" aria-label="Wetter">
+      <div class="card-title">Wetter <span class="muted" id="weather-place"></span></div>
+      <div class="weather-now">
+        <svg class="weather-icon"><use id="weather-icon" href="#i-cloud"/></svg>
+        <div class="weather-temp" id="weather-temp">--°</div>
+        <div class="weather-meta">
+          <div class="weather-desc" id="weather-desc">…</div>
+          <div class="muted" id="weather-feels"></div>
+          <div class="muted" id="weather-wind"></div>
         </div>
-        <div id="clock"></div>
+      </div>
+      <div class="hours" id="weather-hours"></div>
+      <div class="days" id="weather-days"></div>
+      <div class="sun muted" id="weather-sun"></div>
+    </section>
+
+    <section class="card card-departures" aria-label="Abfahrten">
+      <div class="card-title"><svg class="ico"><use href="#i-bus"/></svg> Abfahrten <span class="muted" id="dep-stop"></span></div>
+      <ol class="departures" id="departures"></ol>
+      <div class="empty muted" id="dep-empty" hidden>Keine Abfahrten</div>
+    </section>
+
+    <section class="card card-indoor" id="indoor" data-level="" aria-label="Luft im Space">
+      <div class="card-title">Luft drinnen <span class="muted" id="indoor-sub"></span></div>
+      <div class="co2">
+        <span class="co2-value" id="co2-value">---</span><span class="co2-unit muted">ppm</span>
+        <span class="co2-level" id="co2-level"><span class="dot"></span><span id="co2-level-text">CO₂</span></span>
+      </div>
+      <div class="indoor-stats" id="indoor-stats"></div>
+      <svg class="spark" id="co2-spark" viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="indoor-foot muted" id="indoor-foot">&nbsp;</div>
+    </section>
+
+    <section class="card card-air" aria-label="Luftqualität draußen">
+      <div class="card-title">Luft draußen <span class="muted" id="air-sub"></span></div>
+      <div class="meters">
+        <div class="meter" id="pm25">
+          <div class="meter-head"><span class="meter-label">PM2.5</span><span class="meter-value"><b>--</b> µg/m³</span></div>
+          <div class="meter-track"><div class="meter-fill"></div></div>
+        </div>
+        <div class="meter" id="pm10">
+          <div class="meter-head"><span class="meter-label">PM10</span><span class="meter-value"><b>--</b> µg/m³</span></div>
+          <div class="meter-track"><div class="meter-fill"></div></div>
+        </div>
+      </div>
+      <div class="air-foot muted" id="air-foot">&nbsp;</div>
+    </section>
+
+    <section class="card card-pegel" aria-label="Pegel">
+      <div class="card-title" id="pegel-title">Pegel</div>
+      <div class="pegel-now">
+        <span class="pegel-value" id="pegel-value">---</span><span class="pegel-unit muted">cm</span>
+        <span class="pegel-trend" id="pegel-trend"></span>
+      </div>
+      <div class="pegel-sub muted" id="pegel-sub">&nbsp;</div>
+      <svg class="spark" id="pegel-spark" viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true"></svg>
+    </section>
+
+    <section class="card card-tasks" aria-label="Aufgaben">
+      <div class="card-title">Aufgaben</div>
+      <ul class="tasks" id="tasks"></ul>
+    </section>
+
     </div>
+    <footer class="status" id="status"></footer>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
 </body>
-<script src="main.js"></script>
 </html>

@@ -1,51 +1,281 @@
+/* ---------- Schrift (lokal, läuft auch offline) ---------- */
 @font-face {
-    font-display: swap;
-    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: 'Fira Code';
-    font-style: normal;
-    font-weight: 400;
-    src: url('./fonts/fira-code-v22-latin-regular.woff2') format('woff2');
-    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/fira-code-v22-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fira Code';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/fira-code-v22-latin-600.woff2') format('woff2');
 }
 
-/* fira-code-600 - latin */
-@font-face {
-    font-display: swap;
-    /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: 'Fira Code';
-    font-style: normal;
-    font-weight: 600;
-    src: url('./fonts/fira-code-v22-latin-600.woff2') format('woff2');
-    /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+/* ---------- Design-Tokens ---------- */
+:root {
+  color-scheme: dark;
+  --plane: #0d0d0d;          /* Seitenhintergrund */
+  --surface: #1a1a19;        /* Karten */
+  --surface-2: #232322;      /* Zeilen, Badges */
+  --border: rgba(255, 255, 255, 0.08);
+  --ink: #f0efec;
+  --ink-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --accent: #3987e5;
+  --good: #0ca30c;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+  --radius: 1rem;
+  --gap: 1.1rem;
 }
+
+/* Basis-Schriftgröße skaliert mit der Bildschirmhöhe (4:3 → Höhe ist das Limit) */
+html { font-size: calc(100vh / 64); }
+
+*, *::before, *::after { box-sizing: border-box; }
 
 html, body {
-    font-family: 'Fira Code', Mono;
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  height: 100%;
+  background: var(--plane);
+  color: var(--ink);
+  font-family: 'Fira Code', ui-monospace, monospace;
+  font-weight: 400;
+  line-height: 1.25;
+  overflow: hidden;
+  cursor: none;
 }
 
+/* ---------- Raster ---------- */
+#app {
+  height: 100vh;
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+#app > [hidden] { display: none; }
 #grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr auto;
-    min-height: 100vh;
-
-    & > * {
-        width: 100%;
-        height: 100%;
-    }
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 10rem 1fr 14.5rem;
+  grid-template-areas:
+    "ck ck ck ck ck sp sp sp sp nx nx nx"
+    "we we we we we dp dp dp dp dp dp dp"
+    "in in in ai ai ai pg pg pg tk tk tk";
 }
+.card-indoor     { grid-area: in; }
+.card-clock      { grid-area: ck; }
+.card-space      { grid-area: sp; }
+.card-next       { grid-area: nx; }
+.card-weather    { grid-area: we; }
+.card-departures { grid-area: dp; }
+.card-air        { grid-area: ai; }
+.card-pegel      { grid-area: pg; }
+.card-tasks      { grid-area: tk; }
 
-#clock {
-    font-size: 4rem;
-    height: 6rem;
-    font-weight: 600;
-    color: white;
-    background-color: black;
-    grid-column-start: 1;
-    grid-column-end: 4;
-    text-align: center;
+/* ---------- Karten ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  flex: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-title .muted { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.muted { color: var(--muted); }
+.ico { width: 1.2em; height: 1.2em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+svg use { fill: none; stroke: currentColor; }
+
+/* ---------- Warnbanner (DWD) ---------- */
+.alerts { display: flex; flex-direction: column; gap: 0.5rem; }
+.alert {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--warning);
+  background: color-mix(in oklab, var(--warning) 14%, var(--surface));
+  font-size: 1.5rem;
+}
+.alert .ico { width: 1.8rem; height: 1.8rem; color: var(--warning); }
+.alert[data-level="critical"] { border-color: var(--critical); background: color-mix(in oklab, var(--critical) 16%, var(--surface)); }
+.alert[data-level="critical"] .ico { color: var(--critical); }
+.alert b { font-weight: 600; }
+.alert .muted { font-size: 1.1rem; }
+
+/* ---------- Uhr ---------- */
+.card-clock { justify-content: center; }
+.clock {
+  font-size: 5.6rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.date { font-size: 1.45rem; color: var(--ink-2); margin-top: 0.6rem; white-space: nowrap; }
+
+/* ---------- Space-Status ---------- */
+.space-state { display: flex; align-items: center; gap: 0.9rem; font-size: 3rem; font-weight: 600; line-height: 1; margin-top: 0.3rem; }
+.space-state .dot { width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--muted); flex: none; }
+.card-space[data-state="open"]   .space-state { color: var(--good); }
+.card-space[data-state="open"]   .dot { background: var(--good); box-shadow: 0 0 1.2rem var(--good); }
+.card-space[data-state="closed"] .space-state { color: var(--critical); }
+.card-space[data-state="closed"] .dot { background: var(--critical); }
+.card-space[data-state="unknown"] .space-state { color: var(--muted); }
+.space-since { font-size: 1.25rem; margin-top: 0.8rem; }
+
+/* ---------- Nächster Termin ---------- */
+.next-when { font-size: 1.9rem; font-weight: 600; line-height: 1.1; margin-top: 0.3rem; white-space: nowrap; }
+.next-sub { font-size: 1.25rem; margin-top: 0.7rem; }
+.card-next[data-live="1"] .next-when { color: var(--good); }
+
+/* ---------- Wetter ---------- */
+.weather-now { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 1rem; margin: 0.2rem 0 0.8rem; }
+.weather-icon { width: 6rem; height: 6rem; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; color: var(--ink); }
+.weather-temp { font-size: 5rem; font-weight: 600; line-height: 1; letter-spacing: -0.03em; }
+.weather-meta { font-size: 1.2rem; line-height: 1.4; min-width: 0; }
+.weather-desc { font-size: 1.5rem; color: var(--ink); font-weight: 600; }
+
+.hours { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0.3rem; padding: 0.7rem 0; border-top: 1px solid var(--grid); border-bottom: 1px solid var(--grid); }
+.hour { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; font-size: 1.05rem; }
+.hour .t { color: var(--muted); }
+.hour .ico { width: 2.1rem; height: 2.1rem; stroke-width: 1.5; }
+.hour .temp { font-size: 1.35rem; font-weight: 600; }
+.hour .rain { color: var(--muted); display: flex; align-items: center; gap: 0.2rem; font-size: 1rem; }
+.hour .rain .ico { width: 0.95em; height: 0.95em; }
+.hour .rain[data-hi="1"] { color: var(--accent); }
+
+.days { display: flex; flex-direction: column; justify-content: space-around; gap: 0.15rem; padding-top: 0.4rem; flex: 1; min-height: 0; overflow: hidden; }
+.day[hidden], .tasks li[hidden] { display: none; }
+.day { flex: none; display: grid; grid-template-columns: 4.5rem 2.2rem 1fr auto auto; align-items: center; gap: 0.7rem; font-size: 1.25rem; }
+.day .ico { width: 2rem; height: 2rem; stroke-width: 1.5; }
+.day .name { color: var(--ink-2); }
+.day .desc { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.1rem; }
+.day .rng { font-variant-numeric: tabular-nums; }
+.day .rng b { font-weight: 600; }
+.day .rain { color: var(--muted); font-size: 1.05rem; min-width: 3.2rem; text-align: right; }
+.sun { display: flex; gap: 1.2rem; font-size: 1.05rem; margin-top: 0.4rem; align-items: center; flex: none; }
+.sun span { display: inline-flex; align-items: center; gap: 0.35rem; }
+
+/* ---------- Abfahrten ---------- */
+.departures { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; }
+.dep {
+  display: grid;
+  grid-template-columns: 4.6rem 1fr auto 7.6rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.35rem 0;
+  border-top: 1px solid var(--grid);
+  font-size: 1.55rem;
+}
+.dep:first-child { border-top: 0; }
+.dep .line {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  padding: 0.08rem 0;
+}
+.dep .to { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dep .time { color: var(--muted); font-size: 1.15rem; font-variant-numeric: tabular-nums; display: flex; gap: 0.5rem; justify-content: flex-end; }
+.dep .delay { color: var(--warning); }
+.dep .delay[data-early="1"] { color: var(--accent); }
+.dep .live { display: inline-block; width: 0.55em; height: 0.55em; border-radius: 50%; background: var(--good); margin-left: 0.3rem; vertical-align: middle; }
+.dep .in { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.dep .in small { font-weight: 400; color: var(--muted); font-size: 0.75em; margin-left: 0.2em; }
+.dep[data-now="1"] .in { color: var(--good); }
+.dep[data-cancelled="1"] .to, .dep[data-cancelled="1"] .in { text-decoration: line-through; color: var(--muted); }
+.dep[hidden] { display: none; }
+.dep[data-cancelled="1"] .time::after { content: "fällt aus"; color: var(--critical); }
+.empty { font-size: 1.4rem; padding: 1rem 0; }
+
+/* ---------- Luft drinnen ---------- */
+.co2 { display: flex; align-items: baseline; gap: 0.4rem; line-height: 1; margin-top: 0.1rem; flex-wrap: wrap; }
+.co2-value { font-size: 3.4rem; font-weight: 600; letter-spacing: -0.02em; }
+.co2-unit { font-size: 1.3rem; }
+.co2-level { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 1.1rem; color: var(--ink-2); margin-left: auto; }
+.co2-level .dot { width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--muted); }
+.card-indoor[data-level="good"] .co2-level .dot { background: var(--good); }
+.card-indoor[data-level="moderate"] .co2-level .dot { background: var(--warning); }
+.card-indoor[data-level="moderate"] .co2-value { color: var(--warning); }
+.card-indoor[data-level="poor"] .co2-level .dot { background: var(--critical); }
+.card-indoor[data-level="poor"] .co2-value { color: var(--critical); }
+.indoor-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.2rem 0.8rem; margin-top: 0.6rem; font-size: 1.1rem; }
+.indoor-stats .stat { display: flex; gap: 0.5rem; white-space: nowrap; overflow: hidden; }
+.indoor-stats .stat .l { color: var(--muted); }
+.indoor-stats .stat b { font-weight: 600; }
+.indoor-stats .stat[data-level="moderate"] b { color: var(--warning); }
+.indoor-stats .stat[data-level="poor"] b { color: var(--critical); }
+.card-indoor .spark { margin-top: 0.4rem; }
+.indoor-foot { font-size: 1rem; margin-top: 0.3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- Luft draußen ---------- */
+.meters { display: flex; flex-direction: column; gap: 0.9rem; flex: 1; justify-content: center; }
+.meter-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 1.15rem; color: var(--ink-2); margin-bottom: 0.35rem; }
+.meter-value b { font-size: 2rem; font-weight: 600; color: var(--ink); margin-right: 0.3rem; }
+.meter-track { height: 0.9rem; border-radius: 0.45rem; background: var(--surface-2); overflow: hidden; }
+.meter-fill { height: 100%; width: 0; border-radius: 0.45rem; background: var(--muted); transition: width 0.6s ease; }
+.meter[data-level="good"]     .meter-fill { background: var(--good); }
+.meter[data-level="good"]     .meter-track { background: color-mix(in oklab, var(--good) 22%, var(--surface)); }
+.meter[data-level="warning"]  .meter-fill { background: var(--warning); }
+.meter[data-level="warning"]  .meter-track { background: color-mix(in oklab, var(--warning) 22%, var(--surface)); }
+.meter[data-level="serious"]  .meter-fill { background: var(--serious); }
+.meter[data-level="serious"]  .meter-track { background: color-mix(in oklab, var(--serious) 22%, var(--surface)); }
+.meter[data-level="critical"] .meter-fill { background: var(--critical); }
+.meter[data-level="critical"] .meter-track { background: color-mix(in oklab, var(--critical) 22%, var(--surface)); }
+.meter-label::after { content: attr(data-text); color: var(--muted); margin-left: 0.6rem; }
+.air-foot { font-size: 1rem; margin-top: 0.6rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- Pegel ---------- */
+.pegel-now { display: flex; align-items: baseline; gap: 0.4rem; line-height: 1; margin-top: 0.1rem; }
+.pegel-value { font-size: 3.4rem; font-weight: 600; letter-spacing: -0.02em; }
+.pegel-unit { font-size: 1.3rem; }
+.pegel-trend { font-size: 2rem; margin-left: 0.4rem; color: var(--ink-2); }
+.pegel-sub { font-size: 1.15rem; margin-top: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-pegel[data-state="high"] .pegel-value, .card-pegel[data-state="low"] .pegel-value { color: var(--warning); }
+.spark { flex: 1; min-height: 0; width: 100%; margin-top: 0.6rem; }
+.spark .line { fill: none; stroke: var(--accent); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.spark .area { fill: color-mix(in oklab, var(--accent) 18%, transparent); }
+.spark .ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
+.spark .end { fill: var(--accent); stroke: var(--surface); stroke-width: 2; vector-effect: non-scaling-stroke; }
+
+/* ---------- Aufgaben ---------- */
+.tasks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; font-size: 1.35rem; overflow: hidden; }
+.tasks li { display: flex; align-items: center; gap: 0.7rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tasks .ico { width: 1.3rem; height: 1.3rem; color: var(--muted); }
+
+/* ---------- Statuszeile ---------- */
+.status { flex: none; display: flex; gap: 1.4rem; align-items: center; justify-content: center; font-size: 0.95rem; color: var(--muted); padding: 0 0.3rem; }
+.status span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.status i { display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--grid); }
+.status [data-ok="1"] i { background: var(--good); }
+.status [data-ok="0"] i { background: var(--critical); }
+.status .right { margin-left: auto; }
