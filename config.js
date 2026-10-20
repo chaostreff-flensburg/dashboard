@@ -36,6 +36,6 @@ window.DASHBOARD_CONFIG = {
   // Aktualisierungsintervalle in Sekunden
   refresh: { transit: 30, space: 60, weather: 600, indoor: 60, air: 300, pegel: 600, alerts: 600, tasks: 120 },
 
-  // Kompletter Seiten-Reload (Stunden), damit der Pi dauerhaft sauber läuft
-  reloadEveryHours: 6,
+  // Kompletter Seiten-Reload (Minuten); holt auch neue Dashboard-Versionen nach einem git pull
+  reloadEveryMinutes: 10,
 };

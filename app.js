@@ -450,5 +450,5 @@
   schedule("PEGELONLINE", updatePegel, C.refresh.pegel);
   schedule("Space-Todos", updateTasks, C.refresh.tasks);
 
-  if (C.reloadEveryHours > 0) setTimeout(() => location.reload(), C.reloadEveryHours * 3600e3);
+  if (C.reloadEveryMinutes > 0) setTimeout(() => location.reload(), C.reloadEveryMinutes * 60e3);
 })();
