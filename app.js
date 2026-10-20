@@ -39,7 +39,7 @@
     const limit = list.getBoundingClientRect().bottom + 1;
     for (const el of list.children) if (el.getBoundingClientRect().bottom > limit) el.hidden = true;
   }
-  const fitAll = () => ["departures", "weather-days", "tasks"].forEach((id) => fitRows($(id)));
+  const fitAll = () => ["departures", "weather-days"].forEach((id) => fitRows($(id)));
   window.addEventListener("resize", fitAll);
 
   // ---------- Statuszeile / Scheduler ----------
@@ -391,9 +391,57 @@
     sparkline($("pegel-spark"), vals.filter((_, i) => i % step === 0 || i === vals.length - 1), mw);
   }
 
-  // ---------- Aufgaben ----------
-  $("tasks").innerHTML = (C.tasks || []).map((t) => `<li>${icon("check")}<span>${esc(t)}</span></li>`).join("");
-  fitAll();
+  // ---------- Aufgaben (HedgeDoc-Pad + Grundaufgaben) als Bauchbinde ----------
+  // Nimmt Listenpunkte ("- text") und offene Checkboxen ("- [ ] text"); erledigte ("- [x]") werden übersprungen.
+  function parseTasks(md) {
+    const out = [];
+    for (const line of md.split("\n")) {
+      const m = line.match(/^\s*[-*+]\s+(?:\[([ xX])\]\s*)?(.+?)\s*$/);
+      if (!m || (m[1] && m[1] !== " ")) continue;
+      const text = m[2].replace(/[*_`~]/g, "").trim();
+      if (text) out.push(text);
+    }
+    return out;
+  }
+  function renderTicker(padTasks, baseTasks) {
+    const seen = new Set();
+    const items = [];
+    for (const t of padTasks) { const k = t.toLowerCase(); if (!seen.has(k)) { seen.add(k); items.push({ t, base: false }); } }
+    for (const t of baseTasks) { const k = t.toLowerCase(); if (!seen.has(k)) { seen.add(k); items.push({ t, base: true }); } }
+    const ticker = document.querySelector(".ticker"), track = $("ticker-track");
+    if (!items.length) {
+      ticker.dataset.static = "1";
+      track.innerHTML = `<div class="ticker-group"><span class="empty">Keine offenen Aufgaben</span></div>`;
+      return;
+    }
+    ticker.dataset.static = "0";
+    const html = items.map(({ t, base }) => `<span class="task${base ? " base" : ""}">${esc(t)}</span><span class="sep">•</span>`).join("");
+    // Eine Gruppe muss mindestens so breit wie der Sichtbereich sein, damit die Schleife lückenlos läuft
+    track.innerHTML = `<div class="ticker-group">${html}</div><div class="ticker-group">${html}</div>`;
+    const viewport = ticker.querySelector(".ticker-viewport").clientWidth;
+    let group = track.firstElementChild;
+    let reps = 1;
+    while (group.scrollWidth * reps < viewport && reps < 20) reps++;
+    if (reps > 1) track.innerHTML = `<div class="ticker-group">${html.repeat(reps)}</div><div class="ticker-group">${html.repeat(reps)}</div>`;
+    group = track.firstElementChild;
+    const pxPerSecond = 70;
+    track.style.animationDuration = `${Math.max(10, group.scrollWidth / pxPerSecond)}s`;
+  }
+  let padTasks = [];
+  async function updateTasks() {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 15000);
+    try {
+      const r = await fetch(C.tasks.url, { signal: ctrl.signal, cache: "no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      padTasks = parseTasks(await r.text());
+    } finally {
+      clearTimeout(t);
+    }
+    renderTicker(padTasks, C.tasks.base || []);
+  }
+  renderTicker([], C.tasks.base || []);
+  window.addEventListener("resize", () => renderTicker(padTasks, C.tasks.base || []));
 
   // ---------- Start ----------
   schedule("SpaceAPI", updateSpace, C.refresh.space);
@@ -403,6 +451,7 @@
   schedule("Luft Space", updateIndoor, C.refresh.indoor);
   schedule("sensor.community", updateAir, C.refresh.air);
   schedule("PEGELONLINE", updatePegel, C.refresh.pegel);
+  schedule("Space-Todos", updateTasks, C.refresh.tasks);
 
   if (C.reloadEveryHours > 0) setTimeout(() => location.reload(), C.reloadEveryHours * 3600e3);
 })();
